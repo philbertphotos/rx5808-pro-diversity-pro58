@@ -52,7 +52,7 @@ static void sendRegister(uint8_t address, uint32_t data) {
     sendSlaveSelect(GPIO_PIN_RESET);
 
     sendBits(address, 4);
-    sendBit(HIGH); // Enable write.
+    sendBit(0x1); // Enable write.
 
     sendBits(data, 20);
 

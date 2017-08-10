@@ -1,18 +1,21 @@
 #ifndef _ADAFRUIT_GFX_H
 #define _ADAFRUIT_GFX_H
 
+#include <stdint.h>
+#include <stdio.h>
 #include "Load_fonts.h"
 
-#if ARDUINO >= 100
- #include "Arduino.h"
- #include "Print.h"
-#else
- #include "WProgram.h"
-#endif
+//#if ARDUINO >= 100
+// #include "Arduino.h"
+// #include "Print.h"
+//#else
+// #include "WProgram.h"
+//#endif
 
+#define abs(x) (((x) > 0) ? (x) : -(x))
 #define swap(a, b) { int16_t t = a; a = b; b = t; }
 
-class Adafruit_GFX : public Print {
+class Adafruit_GFX {
 
  public:
 
@@ -30,7 +33,7 @@ class Adafruit_GFX : public Print {
     drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color),
     fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color),
     fillScreen(uint16_t color),
-    invertDisplay(boolean i);
+    invertDisplay(bool i);
 
   // These exist only with Adafruit_GFX (no subclass overrides)
   void
@@ -56,7 +59,7 @@ class Adafruit_GFX : public Print {
     setTextColor(uint16_t c),
     setTextColor(uint16_t c, uint16_t bg),
     setTextSize(uint8_t s),
-    setTextWrap(boolean w),
+    setTextWrap(bool w),
     setRotation(uint8_t r);
 
     int16_t drawUnicode(uint16_t uniCode, int16_t x, int16_t y, int16_t size);
@@ -67,11 +70,7 @@ class Adafruit_GFX : public Print {
     int16_t drawRightString(char *string, int16_t dX, int16_t poY, int16_t size);
     int16_t drawFloat(float floatNumber,int16_t decimal,int16_t poX, int16_t poY, int16_t size);
 
-#if ARDUINO >= 100
-  virtual size_t write(uint8_t);
-#else
   virtual void   write(uint8_t);
-#endif
 
   int16_t
     height(void),
@@ -90,7 +89,7 @@ class Adafruit_GFX : public Print {
   uint8_t
     textsize,
     rotation;
-  boolean
+  bool
     wrap; // If set, 'wrap' text at right edge of display
 };
 

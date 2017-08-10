@@ -3,7 +3,7 @@
 
 
 #include "settings.h"
-
+#include <stdint.h>
 
 #ifdef USE_LBAND
     #define CHANNELS_SIZE 48

@@ -53,11 +53,7 @@ POSSIBILITY OF SUCH DAMAGE.
   #include "Font7s.h"
 #endif
 
-#ifdef __AVR__
- #include <avr/pgmspace.h>
-#else
- #define pgm_read_byte(addr) (*(const unsigned char *)(addr))
-#endif
+#define pgm_read_byte(addr) (*(const unsigned char *)(addr))
 
 Adafruit_GFX::Adafruit_GFX(int16_t w, int16_t h):
   WIDTH(w), HEIGHT(h)
@@ -384,9 +380,9 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
 }
 
 //#if ARDUINO >= 100
-size_t Adafruit_GFX::write(uint8_t c) {
+//size_t Adafruit_GFX::write(uint8_t c) {
 //#else
-//void Adafruit_GFX::write(uint8_t c) {
+void Adafruit_GFX::write(uint8_t c) {
 //#endif
   if (c == '\n') {
     cursor_y += textsize*8;
@@ -402,7 +398,7 @@ size_t Adafruit_GFX::write(uint8_t c) {
     }
   }
 //#if ARDUINO >= 100
-  return 1;
+  //return 1;
 //#endif
 }
 
@@ -462,7 +458,7 @@ void Adafruit_GFX::setTextColor(uint16_t c, uint16_t b) {
   textbgcolor = b; 
 }
 
-void Adafruit_GFX::setTextWrap(boolean w) {
+void Adafruit_GFX::setTextWrap(bool w) {
   wrap = w;
 }
 
@@ -495,7 +491,7 @@ int16_t Adafruit_GFX::height(void) {
   return _height;
 }
 
-void Adafruit_GFX::invertDisplay(boolean i) {
+void Adafruit_GFX::invertDisplay(bool i) {
   // Do nothing, must be subclassed if supported
 }
 
@@ -568,7 +564,7 @@ int16_t w = (width+7)/8;
 int16_t pX      = 0;
 int16_t pY      = y;
 int16_t color   = 0;
-byte line = 0;
+uint8_t line = 0;
 
 //fillRect(x,pY,width+gap,height,textbgcolor);
 

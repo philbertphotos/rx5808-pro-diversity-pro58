@@ -16,26 +16,8 @@ BSD license, check license.txt for more information
 All text above, and the splash screen must be included in any redistribution
 *********************************************************************/
 
-#if ARDUINO >= 100
- #include "Arduino.h"
- #define WIRE_WRITE HWIRE.write
-#else
- #include "WProgram.h"
-  #define WIRE_WRITE HWIRE.send
-#endif
-/*
-#ifdef __SAM3X8E__
- typedef volatile RwReg PortReg;
- typedef uint32_t PortMask;
-#else
-  typedef volatile uint8_t PortReg;
-  typedef uint8_t PortMask;
-#endif
-*/
-//typedef volatile RwReg PortReg;
-// typedef uint32_t PortMask;
-// #include <SPI.h>
 #include <Adafruit_GFX_AS.h>
+#include "stm32f1xx_hal.h"
 
 #define BLACK 0
 #define WHITE 1
@@ -134,7 +116,7 @@ class Adafruit_SSD1306 : public Adafruit_GFX {
  public:
   Adafruit_SSD1306(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS);
   Adafruit_SSD1306(int8_t DC, int8_t RST, int8_t CS);
-  Adafruit_SSD1306(int8_t RST);
+  Adafruit_SSD1306(I2C_HandleTypeDef *i2c_handle, int8_t RST);
 
   void begin(uint8_t switchvcc = SSD1306_SWITCHCAPVCC, uint8_t i2caddr = SSD1306_I2C_ADDRESS, bool reset=true);
   void ssd1306_command(uint8_t c);
@@ -151,7 +133,7 @@ class Adafruit_SSD1306 : public Adafruit_GFX {
   void startscrolldiagleft(uint8_t start, uint8_t stop);
   void stopscroll(void);
 
-  void dim(boolean dim);
+  void dim(bool dim);
 
   void drawPixel(int16_t x, int16_t y, uint16_t color);
 
@@ -160,10 +142,9 @@ class Adafruit_SSD1306 : public Adafruit_GFX {
 
  private:
   int8_t _i2caddr, _vccstate, sid, sclk, dc, rst, cs;
-  // void fastSPIwrite(uint8_t c);
+  I2C_HandleTypeDef *i2c_handler;
 
-  // boolean hwSPI;
-volatile uint32 *mosiport, *clkport, *csport, *dcport;
+volatile uint32_t *mosiport, *clkport, *csport, *dcport;
    uint32_t  mosipinmask, clkpinmask, cspinmask, dcpinmask;
 
   inline void drawFastVLineInternal(int16_t x, int16_t y, int16_t h, uint16_t color) __attribute__((always_inline));

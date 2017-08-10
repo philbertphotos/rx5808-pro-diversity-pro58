@@ -16,18 +16,15 @@ BSD license, check license.txt for more information
 All text above, and the splash screen below must be included in any redistribution
 *********************************************************************/
 
-#include <avr/pgmspace.h>
-//#ifndef __SAM3X8E__ || __STM32F1__
- //#include <util/delay.h>
-//#endif
-#include <stdlib.h>
 
-//#include <HWIRE.h>
-#include <HardWire.h>
-HardWire HWIRE(1,I2C_FAST_MODE); // I2c1
-//HardWire HWIRE(2,I2C_FAST_MODE); // I2c2
+#include <stdlib.h>
+#include <cstring>
+
+//HardWire HWIRE(1,I2C_FAST_MODE); // I2c1
+
 #include <Adafruit_GFX_AS.h>
 #include "Adafruit_SSD1306_STM32.h"
+
 
 #ifndef swap
 #define swap(a, b) { int16_t t = a; a = b; b = t; }
@@ -139,28 +136,12 @@ void Adafruit_SSD1306::drawPixel(int16_t x, int16_t y, uint16_t color) {
     
 }
 
-// Adafruit_SSD1306::Adafruit_SSD1306(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
-//   cs = CS;
-//   rst = RST;
-//   dc = DC;
-//   sclk = SCLK;
-//   sid = SID;
-//   hwSPI = false;
-// }
-
-// constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset 
-// Adafruit_SSD1306::Adafruit_SSD1306(int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
-//   dc = DC;
-//   rst = RST;
-//   cs = CS;
-//   hwSPI = true;
-// }
-
 // initializer for I2C - we only indicate the reset pin!
-Adafruit_SSD1306::Adafruit_SSD1306(int8_t reset) :
+Adafruit_SSD1306::Adafruit_SSD1306(I2C_HandleTypeDef *i2c_handle, int8_t reset) :
 Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
   sclk = dc = cs = sid = -1;
   rst = reset;
+  i2c_handler = i2c_handle;
 }
   
 
@@ -168,58 +149,20 @@ void Adafruit_SSD1306::begin(uint8_t vccstate, uint8_t i2caddr, bool reset) {
   _vccstate = vccstate;
   _i2caddr = i2caddr;
 
-  // set pin directions
-  // if (sid != -1){
-  //   pinMode(dc, OUTPUT);
-  //   pinMode(cs, OUTPUT);
-  //   csport      = portOutputRegister(digitalPinToPort(cs));
-  //   cspinmask   = digitalPinToBitMask(cs);
-  //   dcport      = portOutputRegister(digitalPinToPort(dc));
-  //   dcpinmask   = digitalPinToBitMask(dc);
-  //   if (!hwSPI){
-  //     // set pins for software-SPI
-  //     pinMode(sid, OUTPUT);
-  //     pinMode(sclk, OUTPUT);
-  //     clkport     = portOutputRegister(digitalPinToPort(sclk));
-  //     clkpinmask  = digitalPinToBitMask(sclk);
-  //     mosiport    = portOutputRegister(digitalPinToPort(sid));
-  //     mosipinmask = digitalPinToBitMask(sid);
-  //     }
-//     if (hwSPI){
-//       SPI.begin ();
-// //#ifdef __SAM3X8E__
-//       SPI.setClockDivider (9); // 9.3 MHz
-// //#else
-//  //     SPI.setClockDivider (SPI_CLOCK_DIV2); // 8 MHz
-// //#endif
-//       }
-  //   }
-  // else
-  // {
-    // I2C Init
-    HWIRE.begin();
-      
-#ifdef __SAM3X8E__
-    // Force 400 KHz I2C, rawr! (Uses pins 20, 21 for SDA, SCL)
-    TWI1->TWI_CWGR = 0;
-    TWI1->TWI_CWGR = ((VARIANT_MCK / (2 * 400000)) - 4) * 0x101;
-#endif
-  // }
-
-  if (reset) {
-    // Setup reset pin direction (used by both SPI and I2C)  
-    pinMode(rst, OUTPUT);
-    digitalWrite(rst, HIGH);
-    // VDD (3.3V) goes high at start, lets just chill for a ms
-    delay(1);
-    // bring reset low
-    digitalWrite(rst, LOW);
-    // wait 10ms
-    delay(10);
-    // bring out of reset
-    digitalWrite(rst, HIGH);
-    // turn on VCC (9V?)
-  }
+//  if (reset && rst > 0) {
+//    // Setup reset pin direction (used by both SPI and I2C)
+//    pinMode(rst, OUTPUT);
+//    digitalWrite(rst, HIGH);
+//    // VDD (3.3V) goes high at start, lets just chill for a ms
+//    delay(1);
+//    // bring reset low
+//    digitalWrite(rst, LOW);
+//    // wait 10ms
+//    delay(10);
+//    // bring out of reset
+//    digitalWrite(rst, HIGH);
+//    // turn on VCC (9V?)
+//  }
 
    #if defined SSD1306_128_32
     // Init sequence for 128x32 OLED module
@@ -342,28 +285,12 @@ void Adafruit_SSD1306::invertDisplay(uint8_t i) {
 }
 
 void Adafruit_SSD1306::ssd1306_command(uint8_t c) { 
-  // if (sid != -1)
-  // {
-  //   // SPI
-  //   //digitalWrite(cs, HIGH);
-  //   *csport |= cspinmask;
-  //   //digitalWrite(dc, LOW);
-  //   *dcport &= ~dcpinmask;
-  //   //digitalWrite(cs, LOW);
-  //   *csport &= ~cspinmask;
-  //   fastSPIwrite(c);
-  //   //digitalWrite(cs, HIGH);
-  //   *csport |= cspinmask;
-  // }
-  // else
-  // {
-    // I2C
     uint8_t control = 0x00;   // Co = 0, D/C = 0
-    HWIRE.beginTransmission(_i2caddr);
-    WIRE_WRITE(control);
-    WIRE_WRITE(c);
-    HWIRE.endTransmission();
-  // }
+    HAL_I2C_Mem_Write(i2c_handler, _i2caddr, control, 1, &c, 1, 100);
+//    HWIRE.beginTransmission(_i2caddr);
+//    WIRE_WRITE(control);
+//    WIRE_WRITE(c);
+//    HWIRE.endTransmission();
 }
 
 // startscrollright
@@ -437,7 +364,7 @@ void Adafruit_SSD1306::stopscroll(void){
 // Dim the display
 // dim = true: display is dimmed
 // dim = false: display is normal
-void Adafruit_SSD1306::dim(boolean dim) {
+void Adafruit_SSD1306::dim(bool dim) {
   uint8_t contrast;
 
   if (dim) {
@@ -456,28 +383,14 @@ void Adafruit_SSD1306::dim(boolean dim) {
 }
 
 void Adafruit_SSD1306::ssd1306_data(uint8_t c) {
-  // if (sid != -1)
-  // {
-  //   // SPI
-  //   //digitalWrite(cs, HIGH);
-  //   *csport |= cspinmask;
-  //   //digitalWrite(dc, HIGH);
-  //   *dcport |= dcpinmask;
-  //   //digitalWrite(cs, LOW);
-  //   *csport &= ~cspinmask;
-  //   fastSPIwrite(c);
-  //   //digitalWrite(cs, HIGH);
-  //   *csport |= cspinmask;
-  // }
-  // else
-  // {
-    // I2C
+     // I2C
     uint8_t control = 0x40;   // Co = 0, D/C = 1
-    HWIRE.beginTransmission(_i2caddr);
-    WIRE_WRITE(control);
-    WIRE_WRITE(c);
-    HWIRE.endTransmission();
-  // }
+
+    HAL_I2C_Mem_Write(i2c_handler, _i2caddr, control, 1, &c, 1, 100);
+//    HWIRE.beginTransmission(_i2caddr);
+//    WIRE_WRITE(control);
+//    WIRE_WRITE(c);
+//    HWIRE.endTransmission();
 }
 
 void Adafruit_SSD1306::display(void) {
@@ -497,49 +410,19 @@ void Adafruit_SSD1306::display(void) {
     ssd1306_command(1); // Page end address
   #endif
 
-  // if (sid != -1)
-  // {
-  //   // SPI
-  //   *csport |= cspinmask;
-  //   *dcport |= dcpinmask;
-  //   *csport &= ~cspinmask;
-
-  //   for (uint16_t i=0; i<(SSD1306_LCDWIDTH*SSD1306_LCDHEIGHT/8); i++) {
-  //     fastSPIwrite(buffer[i]);
-  //     //ssd1306_data(buffer[i]);
-  //   }
-  //   *csport |= cspinmask;
-  // }
-  // else
-  // {
-    // save I2C bitrate
-      /*
-#ifndef __SAM3X8E__
-    uint8_t twbrbackup = TWBR;
-    TWBR = 12; // upgrade to 400KHz!
-#endif
-*/
-    //Serial.println(TWBR, DEC);
-    //Serial.println(TWSR & 0x3, DEC);
-
-    // I2C
-    for (uint16_t i=0; i<(SSD1306_LCDWIDTH*SSD1306_LCDHEIGHT/8); i++) {
-      // send a bunch of data in one xmission
-      HWIRE.beginTransmission(_i2caddr);
-      WIRE_WRITE(0x40);
-      for (uint8_t x=0; x<16; x++) {
-  WIRE_WRITE(buffer[i]);
-  i++;
-      }
-      i--;
-      HWIRE.endTransmission();
-    }
-/*
-#ifndef __SAM3X8E__
-    TWBR = twbrbackup;
-#endif
- */
-  // }
+//    // I2C
+//    for (uint16_t i=0; i<(SSD1306_LCDWIDTH*SSD1306_LCDHEIGHT/8); i++) {
+//      // send a bunch of data in one xmission
+//      HWIRE.beginTransmission(_i2caddr);
+//      WIRE_WRITE(0x40);
+//      for (uint8_t x=0; x<16; x++) {
+//  WIRE_WRITE(buffer[i]);
+//  i++;
+//      }
+//      i--;
+//      HWIRE.endTransmission();
+//    }
+    HAL_I2C_Mem_Write(i2c_handler, _i2caddr, 0x40, 1, buffer, (SSD1306_LCDWIDTH*SSD1306_LCDHEIGHT/8)*16, 250);
 }
 
 // clear everything
@@ -547,24 +430,8 @@ void Adafruit_SSD1306::clearDisplay(void) {
   memset(buffer, 0, (SSD1306_LCDWIDTH*SSD1306_LCDHEIGHT/8));
 }
 
-
-// inline void Adafruit_SSD1306::fastSPIwrite(uint8_t d) {
-  
-//   if(hwSPI) {
-//     (void)SPI.transfer(d);
-//   } else {
-//     for(uint8_t bit = 0x80; bit; bit >>= 1) {
-//       *clkport &= ~clkpinmask;
-//       if(d & bit) *mosiport |=  mosipinmask;
-//       else        *mosiport &= ~mosipinmask;
-//       *clkport |=  clkpinmask;
-//     }
-//   }
-//   //*csport |= cspinmask;
-// }
-
 void Adafruit_SSD1306::drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) {
-  boolean bSwap = false;
+  bool bSwap = false;
   switch(rotation) { 
     case 0:
       // 0 degree rotation, do nothing

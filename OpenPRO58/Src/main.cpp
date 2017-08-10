@@ -105,9 +105,11 @@ int main(void)
 
   HAL_Delay(500); //Delay 500ms to allow RX5808 startup.
 
-  EepromSettings.init(&hi2c1);
+  EepromSettings.init(&hi2c2);
   EepromSettings.load();
-  Receiver::setChannel(EeepromSettings.startChannel);
+  Receiver::setChannel(EepromSettings.startChannel);
+
+
 
 
   /* USER CODE END 2 */

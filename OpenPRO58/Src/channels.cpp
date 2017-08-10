@@ -1,11 +1,9 @@
-#include <avr/pgmspace.h>
-
 #include "channels.h"
 #include "settings.h"
 
 
 // Channels to sent to the SPI registers
-static const uint16_t channelTable[] PROGMEM = {
+static const uint16_t channelTable[] = {
     #define _CHANNEL_REG_FLO(f) ((f - 479) / 2)
     #define _CHANNEL_REG_N(f) (_CHANNEL_REG_FLO(f) / 32)
     #define _CHANNEL_REG_A(f) (_CHANNEL_REG_FLO(f) % 32)
@@ -80,7 +78,7 @@ static const uint16_t channelTable[] PROGMEM = {
 };
 
 // Channels with their Mhz Values
-static const uint16_t channelFreqTable[] PROGMEM = {
+static const uint16_t channelFreqTable[] = {
     5865, 5845, 5825, 5805, 5785, 5765, 5745, 5725, // A
     5733, 5752, 5771, 5790, 5809, 5828, 5847, 5866, // B
     5705, 5685, 5665, 5645, 5885, 5905, 5925, 5945, // E
@@ -95,7 +93,7 @@ static const uint16_t channelFreqTable[] PROGMEM = {
 // Encode channel names as an 8-bit value where:
 //      0b00000111 = channel number (zero-indexed)
 //      0b11111000 = channel letter (offset from 'A' character)
-static const uint8_t channelNames[] PROGMEM = {
+static const uint8_t channelNames[] = {
     #define _CHANNEL_NAMES(l) (uint8_t) ((l - 65) << 3)
     #define CHANNEL_NAMES(l) \
         _CHANNEL_NAMES(l) | 0, \
@@ -123,7 +121,7 @@ static const uint8_t channelNames[] PROGMEM = {
 };
 
 // All Channels of the above List ordered by Mhz
-static const uint8_t channelFreqOrderedIndex[] PROGMEM = {
+static const uint8_t channelFreqOrderedIndex[] = {
     #ifdef USE_LBAND
         40, // 5362
         41, // 5399
@@ -217,7 +215,7 @@ static const uint8_t channelFreqOrderedIndex[] PROGMEM = {
     #endif
 };
 
-static const uint8_t channelIndexToOrderedIndex[] PROGMEM = {
+static const uint8_t channelIndexToOrderedIndex[] = {
     #ifdef USE_LBAND
         39,
         36,
@@ -314,18 +312,18 @@ static const uint8_t channelIndexToOrderedIndex[] PROGMEM = {
 
 namespace Channels {
     const uint16_t getSynthRegisterB(uint8_t index) {
-        return pgm_read_word_near(channelTable + index);
+        return channelTable[index];
     }
 
     const uint16_t getFrequency(uint8_t index) {
-        return pgm_read_word_near(channelFreqTable + index);
+        return channelFreqTable[index];
     }
 
     // Returns channel name as a string.
     //      dest[] must be at least 3-bytes.
     char nameBuffer[3];
     const char *getName(uint8_t index) {
-        uint8_t encodedName = pgm_read_byte_near(channelNames + index);
+        uint8_t encodedName = channelNames[index];
 
         nameBuffer[0] = 65 + (encodedName >> 3);
         nameBuffer[1] = 48 + (encodedName & (255 >> (8 - 3))) + 1;
@@ -335,10 +333,10 @@ namespace Channels {
     }
 
     const uint8_t getOrderedIndex(uint8_t index) {
-        return pgm_read_byte_near(channelFreqOrderedIndex + index);
+        return channelFreqOrderedIndex[index];
     }
 
     const uint8_t getOrderedIndexFromIndex(uint8_t index) {
-        return pgm_read_byte_near(channelIndexToOrderedIndex + index);
+        return channelIndexToOrderedIndex[index];
     }
 }

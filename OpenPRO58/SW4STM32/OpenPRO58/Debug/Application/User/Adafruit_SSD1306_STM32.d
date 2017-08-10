@@ -1,5 +1,8 @@
-Application/User/receiver.o: \
- E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Src/receiver.cpp \
+Application/User/Adafruit_SSD1306_STM32.o: \
+ E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Src/Adafruit_SSD1306_STM32.cpp \
+ E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/Adafruit_GFX_AS.h \
+ E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/Load_fonts.h \
+ E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/Adafruit_SSD1306_STM32.h \
  E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/stm32f1xx_hal_conf.h \
  E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/mxconstants.h \
@@ -25,16 +28,13 @@ Application/User/receiver.o: \
  E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h \
  E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h \
  E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
- E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
- E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/settings.h \
- E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/settings_eeprom.h \
- E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/settings.h \
- E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/settings_internal.h \
- E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/receiver.h \
- E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/receiver.h \
- E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/receiver_spi.h \
- E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/channels.h \
- E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/timer.h
+ E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
+
+E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/Adafruit_GFX_AS.h:
+
+E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/Load_fonts.h:
+
+E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/Adafruit_SSD1306_STM32.h:
 
 E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 
@@ -87,21 +87,3 @@ E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Drivers/STM32F1xx_HAL_Driver/Inc/st
 E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h:
 
 E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
-
-E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/settings.h:
-
-E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/settings_eeprom.h:
-
-E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/settings.h:
-
-E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/settings_internal.h:
-
-E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/receiver.h:
-
-E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/receiver.h:
-
-E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/receiver_spi.h:
-
-E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/channels.h:
-
-E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc/timer.h:
