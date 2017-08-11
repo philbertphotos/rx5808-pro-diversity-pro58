@@ -30,7 +30,7 @@ All text above, and the splash screen below must be included in any redistributi
 
 // the memory buffer for the LCD
 
-static uint8_t buffer[SSD1306_LCDHEIGHT * SSD1306_LCDWIDTH / 8] = { 
+uint8_t buffer[SSD1306_LCDHEIGHT * SSD1306_LCDWIDTH / 8] = {
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -284,7 +284,11 @@ void SSD1306::invertDisplay(uint8_t i) {
 
 void SSD1306::ssd1306_command(uint8_t c) {
     uint8_t control = 0x00;   // Co = 0, D/C = 0
-    HAL_I2C_Mem_Write(i2c_handler, _i2caddr, control, 1, &c, 1, 100);
+//    uint8_t data[2];
+//    data[0] = 0x00;
+//    data[1] = c;
+    HAL_I2C_Mem_Write(i2c_handler, _i2caddr << 1, control, 1, &c, 1, 100);
+//    HAL_I2C_Master_Transmit(i2c_handler, _i2caddr, data, 2, 100);
 //    HWIRE.beginTransmission(_i2caddr);
 //    WIRE_WRITE(control);
 //    WIRE_WRITE(c);
@@ -384,7 +388,7 @@ void SSD1306::ssd1306_data(uint8_t c) {
      // I2C
     uint8_t control = 0x40;   // Co = 0, D/C = 1
 
-    HAL_I2C_Mem_Write(i2c_handler, _i2caddr, control, 1, &c, 1, 100);
+    HAL_I2C_Mem_Write(i2c_handler, _i2caddr << 1, control, 1, &c, 1, 100);
 //    HWIRE.beginTransmission(_i2caddr);
 //    WIRE_WRITE(control);
 //    WIRE_WRITE(c);
@@ -408,19 +412,21 @@ void SSD1306::display(void) {
     ssd1306_command(1); // Page end address
   #endif
 
-//    // I2C
+    // I2C
 //    for (uint16_t i=0; i<(SSD1306_LCDWIDTH*SSD1306_LCDHEIGHT/8); i++) {
-//      // send a bunch of data in one xmission
+	for (uint16_t i=0; i<(SSD1306_LCDHEIGHT); i++) {
+      // send a bunch of data in one xmission
 //      HWIRE.beginTransmission(_i2caddr);
-//      WIRE_WRITE(0x40);
+      HAL_I2C_Mem_Write(i2c_handler, _i2caddr << 1, 0x40, 1, &buffer[i*16], 16, 50);
+      //WIRE_WRITE(0x40);
 //      for (uint8_t x=0; x<16; x++) {
 //  WIRE_WRITE(buffer[i]);
 //  i++;
 //      }
 //      i--;
 //      HWIRE.endTransmission();
-//    }
-    HAL_I2C_Mem_Write(i2c_handler, _i2caddr, 0x40, 1, buffer, (SSD1306_LCDWIDTH*SSD1306_LCDHEIGHT/8)*16, 250);
+    }
+
 }
 
 // clear everything

@@ -15,8 +15,8 @@
 static inline uint32_t map(uint32_t value, uint32_t fromStart, uint32_t fromEnd,
 		uint32_t toStart, uint32_t toEnd);
 
-static void updateRssiLimits();
-static void writeSerialData();
+//static void updateRssiLimits();
+//static void writeSerialData();
 
 
 namespace Receiver {
@@ -65,11 +65,9 @@ namespace Receiver {
         return rssiStableTimer.hasTicked();
     }
 
-    uint16_t updateRssi() {
-    //    analogRead(PIN_RSSI_A); // Fake read to let ADC settle.
+    void updateRssi() {
         rssiARaw = (uint16_t)rssiDMARaw[0];
         #ifdef USE_DIVERSITY
-      //      analogRead(PIN_RSSI_B);
             rssiBRaw = (uint16_t)rssiDMARaw[1];
         #endif
 

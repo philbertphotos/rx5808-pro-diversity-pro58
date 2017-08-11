@@ -37,6 +37,11 @@
 			<locationURI>PARENT-2-PROJECT_LOC/Src/Adafruit_GFX_AS.cpp</locationURI>
 		</link>
 		<link>
+			<name>Application/User/DWT_Delay.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Src/DWT_Delay.c</locationURI>
+		</link>
+		<link>
 			<name>Application/User/Eeprom24C01_02.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Src/Eeprom24C01_02.cpp</locationURI>

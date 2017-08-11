@@ -45,6 +45,8 @@
 #include "state.h"
 #include "ui.h"
 
+#include "DWT_Delay.h"
+
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -108,6 +110,11 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 
+  if(DWT_Delay_Init())
+	{
+	  Error_Handler(); /* Call Error Handler */
+	}
+
   HAL_GPIO_WritePin(RECEIVER_SW_GPIO_Port,RECEIVER_SW_Pin,GPIO_PIN_RESET);
   HAL_GPIO_WritePin(SPI_SLAVE_SELECT_A_GPIO_Port,SPI_SLAVE_SELECT_A_Pin,GPIO_PIN_SET);
   HAL_GPIO_WritePin(SPI_SLAVE_SELECT_B_GPIO_Port,SPI_SLAVE_SELECT_B_Pin,GPIO_PIN_SET);
@@ -115,7 +122,6 @@ int main(void)
   HAL_GPIO_WritePin(SPI_DATA_GPIO_Port,SPI_DATA_Pin,GPIO_PIN_RESET);
 
   HAL_Delay(500); //Delay 500ms to allow RX5808 startup.
-
   EepromSettings.init(&hi2c2);
   EepromSettings.load();
   Receiver::setChannel(EepromSettings.startChannel);
@@ -338,30 +344,44 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(RECEIVER_SW_GPIO_Port, RECEIVER_SW_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, LED_B_Pin|SPI_SLAVE_SELECT_B_Pin|SPI_SLAVE_SELECT_A_Pin|SPI_DATA_Pin
+                          |SPI_CLOCK_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, BUZZER_Pin|LED_A_Pin, GPIO_PIN_RESET);
+
   /*Configure GPIO pin : RECEIVER_SW_Pin */
   GPIO_InitStruct.Pin = RECEIVER_SW_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(RECEIVER_SW_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : LED_B_Pin SPI_SLAVE_SELECT_B_Pin SPI_SLAVE_SELECT_A_Pin SPI_DATA_Pin 
-                           SPI_CLOCK_Pin */
-  GPIO_InitStruct.Pin = LED_B_Pin|SPI_SLAVE_SELECT_B_Pin|SPI_SLAVE_SELECT_A_Pin|SPI_DATA_Pin 
-                          |SPI_CLOCK_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(RECEIVER_SW_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : LED_B_Pin */
+  GPIO_InitStruct.Pin = LED_B_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(LED_B_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : SPI_SLAVE_SELECT_B_Pin SPI_SLAVE_SELECT_A_Pin SPI_DATA_Pin SPI_CLOCK_Pin */
+  GPIO_InitStruct.Pin = SPI_SLAVE_SELECT_B_Pin|SPI_SLAVE_SELECT_A_Pin|SPI_DATA_Pin|SPI_CLOCK_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : BUTTON_DOWN_Pin BUTTON_EB0_Pin BUTTON_MODE_Pin BUTTON_EB2_Pin */
   GPIO_InitStruct.Pin = BUTTON_DOWN_Pin|BUTTON_EB0_Pin|BUTTON_MODE_Pin|BUTTON_EB2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pins : BUTTON_UP_Pin BUTTON_EB1_Pin */
   GPIO_InitStruct.Pin = BUTTON_UP_Pin|BUTTON_EB1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : BUZZER_Pin LED_A_Pin */
@@ -369,13 +389,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LED_B_Pin|SPI_SLAVE_SELECT_B_Pin|SPI_SLAVE_SELECT_A_Pin|SPI_DATA_Pin 
-                          |SPI_CLOCK_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, BUZZER_Pin|LED_A_Pin, GPIO_PIN_RESET);
 
 }
 

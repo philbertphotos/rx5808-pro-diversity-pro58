@@ -41,7 +41,7 @@ namespace Receiver {
     #endif
 
     void setChannel(uint8_t channel);
-    uint16_t updateRssi();
+    void updateRssi();
     void setActiveReceiver(ReceiverId receiver = ReceiverId::A);
     #ifdef USE_DIVERSITY
         void setDiversityMode(uint8_t mode);

@@ -16,7 +16,7 @@
 #define TEXT_Y SCREEN_HEIGHT - (CHAR_HEIGHT + 2) * 2
 
 static void drawTriangles();
-static void drawMenuEntry();
+//static void drawMenuEntry();
 
 
 void StateMachine::MenuStateHandler::onInitialDraw() {

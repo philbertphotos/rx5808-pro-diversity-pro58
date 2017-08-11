@@ -22,21 +22,22 @@ namespace Buttons {
 
 
     void update() {
-//        #define UPDATE_BUTTON(button) \
-//            updateButton( \
-//                Button::button, \
-//                states[static_cast<__SIZE_TYPE__>(Button::button)], \
-//                BUTTON_ ## button ## _GPIO_Port \
-//				BUTTON_ ## button ## _Pin \
-//            );
-//
-//        UPDATE_BUTTON(UP);
-//        UPDATE_BUTTON(DOWN);
-//        UPDATE_BUTTON(MODE);
-//        UPDATE_BUTTON(EB0);
-//        UPDATE_BUTTON(EB1);
-//        UPDATE_BUTTON(EB2);
-//        #undef UPDATE_BUTTON
+/*        #define UPDATE_BUTTON(button) \
+            updateButton( \
+                Button::button, \
+                states[static_cast<__SIZE_TYPE__>(Button::button)], \
+                BUTTON_ ## button ## _GPIO_Port \
+				BUTTON_ ## button ## _Pin \
+            );
+
+        UPDATE_BUTTON(UP);
+        UPDATE_BUTTON(DOWN);
+        UPDATE_BUTTON(MODE);
+        UPDATE_BUTTON(EB0);
+        UPDATE_BUTTON(EB1);
+        UPDATE_BUTTON(EB2);
+        #undef UPDATE_BUTTON
+*/
 
         updateButton(Button::UP, states[static_cast<uint8_t>(Button::UP)], BUTTON_UP_GPIO_Port, BUTTON_UP_Pin);
         updateButton(Button::DOWN, states[static_cast<uint8_t>(Button::DOWN)], BUTTON_DOWN_GPIO_Port, BUTTON_DOWN_Pin);

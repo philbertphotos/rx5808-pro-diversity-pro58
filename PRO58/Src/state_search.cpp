@@ -49,6 +49,9 @@ static const unsigned char* menuOrderIcon(void* state) {
         case SearchStateHandler::ScanOrder::CHANNEL:
             return channelOrderIcon;
             break;
+
+        default:
+        	return freqOrderIcon;
     }
 }
 
