@@ -112,13 +112,11 @@ All text above, and the splash screen must be included in any redistribution
 #define SSD1306_VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL 0x29
 #define SSD1306_VERTICAL_AND_LEFT_HORIZONTAL_SCROLL 0x2A
 
-class Adafruit_SSD1306 : public Adafruit_GFX {
+class SSD1306 : public Adafruit_GFX {
  public:
-  Adafruit_SSD1306(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS);
-  Adafruit_SSD1306(int8_t DC, int8_t RST, int8_t CS);
-  Adafruit_SSD1306(I2C_HandleTypeDef *i2c_handle, int8_t RST);
+  SSD1306();
 
-  void begin(uint8_t switchvcc = SSD1306_SWITCHCAPVCC, uint8_t i2caddr = SSD1306_I2C_ADDRESS, bool reset=true);
+  void begin(I2C_HandleTypeDef *i2c_handle, int8_t RST, uint8_t switchvcc = SSD1306_SWITCHCAPVCC, uint8_t i2caddr = SSD1306_I2C_ADDRESS, bool reset=true);
   void ssd1306_command(uint8_t c);
   void ssd1306_data(uint8_t c);
 

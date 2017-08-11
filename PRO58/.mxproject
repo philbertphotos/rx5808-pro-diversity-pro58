@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Inc
+HeaderPath=E:/REPO_PRIV/PioPRO58/PRO58/Inc
 HeaderFiles=stm32f1xx_it.h;stm32f1xx_hal_conf.h;mxconstants.h;
-SourcePath=E:/REPO_PRIV/PRO58/HAL_version/src/OpenPRO58/Src
+SourcePath=E:/REPO_PRIV/PioPRO58/PRO58/Src
 SourceFiles=stm32f1xx_it.h;stm32f1xx_hal_conf.h;mxconstants.h;stm32f1xx_it.c;stm32f1xx_hal_msp.c;main.c;
 
 [PreviousLibFiles]

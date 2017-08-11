@@ -7,7 +7,7 @@
 
 //#if ARDUINO >= 100
 // #include "Arduino.h"
-// #include "Print.h"
+#include "Print.h"
 //#else
 // #include "WProgram.h"
 //#endif
@@ -15,7 +15,7 @@
 #define abs(x) (((x) > 0) ? (x) : -(x))
 #define swap(a, b) { int16_t t = a; a = b; b = t; }
 
-class Adafruit_GFX {
+class Adafruit_GFX : public Print {
 
  public:
 
@@ -70,7 +70,7 @@ class Adafruit_GFX {
     int16_t drawRightString(char *string, int16_t dX, int16_t poY, int16_t size);
     int16_t drawFloat(float floatNumber,int16_t decimal,int16_t poX, int16_t poY, int16_t size);
 
-  virtual void   write(uint8_t);
+  virtual size_t  write(uint8_t);
 
   int16_t
     height(void),

@@ -37,6 +37,14 @@
 
 #include "settings_eeprom.h"
 
+#include "channels.h"
+#include "receiver.h"
+#include "receiver_spi.h"
+
+#include "buttons.h"
+#include "state.h"
+#include "ui.h"
+
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -65,7 +73,10 @@ static void MX_USART1_UART_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-
+static void globalMenuButtonHandler(
+  Button button,
+  Buttons::PressType pressType
+);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
@@ -109,8 +120,14 @@ int main(void)
   EepromSettings.load();
   Receiver::setChannel(EepromSettings.startChannel);
 
+  StateMachine::setup();
+  Ui::setup(&hi2c1);
 
+  Receiver::setActiveReceiver(Receiver::ReceiverId::A);
 
+  Buttons::registerChangeFunc(globalMenuButtonHandler);
+  // Switch to initial state.
+  StateMachine::switchState(StateMachine::State::SEARCH);
 
   /* USER CODE END 2 */
 
@@ -118,6 +135,21 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  Receiver::update();
+	  Buttons::update();
+	  StateMachine::update();
+	  Ui::update();
+	  EepromSettings.update();
+
+	  if (
+	    StateMachine::currentState != StateMachine::State::SCREENSAVER
+	    && StateMachine::currentState != StateMachine::State::BANDSCAN
+	    && (HAL_GetTick() - Buttons::lastChangeTime) >
+	    (SCREENSAVER_TIMEOUT * 1000)
+	  ) {
+	    StateMachine::switchState(StateMachine::State::SCREENSAVER);
+	  }
+
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
@@ -348,7 +380,19 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+static void globalMenuButtonHandler(
+  Button button,
+  Buttons::PressType pressType
+) {
+  if (
+    StateMachine::currentState != StateMachine::State::MENU &&
+    button == Button::MODE &&
+    pressType == Buttons::PressType::HOLDING
+  ) {
+    StateMachine::switchState(StateMachine::State::MENU);
+  }
 
+}
 /* USER CODE END 4 */
 
 /**
