@@ -1,5 +1,3 @@
-#include "stm32f1xx_hal.h"
-
 #include "settings.h"
 
 #include "settings_eeprom.h"
@@ -20,7 +18,7 @@ static inline uint32_t map(uint32_t value, uint32_t fromStart, uint32_t fromEnd,
 
 
 namespace Receiver {
-	uint32_t rssiDMARaw[2]; //0-A 1-B
+	uint16_t rssiDMARaw[2]; //0-A 1-B
 
     ReceiverId activeReceiver = ReceiverId::A;
     uint8_t activeChannel = 0;
@@ -43,6 +41,9 @@ namespace Receiver {
         static Timer serialLogTimer = Timer(25);
     #endif
 
+    void init(ADC_HandleTypeDef *hadc){
+    	HAL_ADC_Start_DMA(hadc, (uint32_t*)rssiDMARaw, 2);
+    }
 
     void setChannel(uint8_t channel)
     {
@@ -164,7 +165,7 @@ namespace Receiver {
 #endif
 
     void setup(ADC_HandleTypeDef *adc_handle) {
-    	HAL_ADC_Start_DMA(adc_handle, rssiDMARaw, 2);
+    	HAL_ADC_Start_DMA(adc_handle, (uint32_t*)rssiDMARaw, 2);
         #ifdef DISABLE_AUDIO
             ReceiverSpi::setPowerDownRegister(0b00010000110111110011);
         #endif

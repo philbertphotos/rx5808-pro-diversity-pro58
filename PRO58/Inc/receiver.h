@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 #include "settings.h"
-
+#include "stm32f1xx_hal.h"
 
 #define RECEIVER_LAST_DELAY 50
 #define RECEIVER_LAST_DATA_SIZE 24
@@ -51,7 +51,7 @@ namespace Receiver {
     bool isRssiStable();
 
 
-    void setup();
+    void setup(ADC_HandleTypeDef *adc_handle);
     void update();
 }
 
