@@ -36,8 +36,8 @@
 #define GRAPH_W (SCREEN_WIDTH - BORDER_GRAPH_L_X)
 #ifdef USE_DIVERSITY
     #define GRAPH_H (GRAPH_SEPERATOR_Y - 2)
-    #define GRAPH_A_Y 0
-    #define GRAPH_B_Y (SCREEN_HEIGHT - GRAPH_H - 1)
+    #define GRAPH_A_Y (SCREEN_HEIGHT - GRAPH_H - 1)
+    #define GRAPH_B_Y 0
 
     #define RX_TEXT_SIZE 1
     #define RX_TEXT_X (BORDER_GRAPH_L_X + 4)

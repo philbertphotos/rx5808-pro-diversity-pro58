@@ -55,6 +55,9 @@ DMA_HandleTypeDef hdma_adc1;
 
 I2C_HandleTypeDef hi2c1;
 I2C_HandleTypeDef hi2c2;
+DMA_HandleTypeDef hdma_i2c1_tx;
+DMA_HandleTypeDef hdma_i2c2_tx;
+DMA_HandleTypeDef hdma_i2c2_rx;
 
 UART_HandleTypeDef huart1;
 
@@ -121,13 +124,14 @@ int main(void)
   HAL_GPIO_WritePin(SPI_CLOCK_GPIO_Port,SPI_CLOCK_Pin,GPIO_PIN_RESET);
   HAL_GPIO_WritePin(SPI_DATA_GPIO_Port,SPI_DATA_Pin,GPIO_PIN_RESET);
 
-  HAL_Delay(500); //Delay 500ms to allow RX5808 startup.
+  HAL_Delay(1000); //Delay 500ms to allow RX5808 startup.
   EepromSettings.init(&hi2c2);
   EepromSettings.load();
   Receiver::setup(&hadc1);
   Receiver::setChannel(EepromSettings.startChannel);
 
   StateMachine::setup();
+
   Ui::setup(&hi2c1);
 
   Receiver::setActiveReceiver(Receiver::ReceiverId::A);
@@ -324,6 +328,15 @@ static void MX_DMA_Init(void)
   /* DMA1_Channel1_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
+  /* DMA1_Channel4_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
+  /* DMA1_Channel5_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
+  /* DMA1_Channel6_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel6_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel6_IRQn);
 
 }
 

@@ -287,7 +287,15 @@ void SSD1306::ssd1306_command(uint8_t c) {
 //    uint8_t data[2];
 //    data[0] = 0x00;
 //    data[1] = c;
-    HAL_I2C_Mem_Write(i2c_handler, _i2caddr << 1, control, 1, &c, 1, 100);
+    HAL_StatusTypeDef ret =  HAL_I2C_Mem_Write(i2c_handler, _i2caddr << 1, control, 1, &c, 1, 10);
+//    while(HAL_I2C_GetState(i2c_handler) != HAL_I2C_STATE_READY)
+//    {}
+//    HAL_StatusTypeDef ret = HAL_I2C_Mem_Write_DMA(i2c_handler, _i2caddr << 1, control, 1, &c, 1);
+//    if(ret == HAL_BUSY){
+////    	HAL_I2C_ClearBusyFlagErrata_2_14_7(i2c_handler);
+//    	HAL_StatusTypeDef ret =  HAL_I2C_Mem_Write(i2c_handler, _i2caddr << 1, control, 1, &c, 1, 100);
+//    }
+//    HAL_Delay(1);
 //    HAL_I2C_Master_Transmit(i2c_handler, _i2caddr, data, 2, 100);
 //    HWIRE.beginTransmission(_i2caddr);
 //    WIRE_WRITE(control);
@@ -388,7 +396,8 @@ void SSD1306::ssd1306_data(uint8_t c) {
      // I2C
     uint8_t control = 0x40;   // Co = 0, D/C = 1
 
-    HAL_I2C_Mem_Write(i2c_handler, _i2caddr << 1, control, 1, &c, 1, 100);
+    HAL_I2C_Mem_Write(i2c_handler, _i2caddr << 1, control, 1, &c, 1, 10);
+    //HAL_StatusTypeDef ret = HAL_I2C_Mem_Write_DMA(i2c_handler, _i2caddr << 1, control, 1, &c, 1);
 //    HWIRE.beginTransmission(_i2caddr);
 //    WIRE_WRITE(control);
 //    WIRE_WRITE(c);
@@ -414,10 +423,11 @@ void SSD1306::display(void) {
 
     // I2C
 //    for (uint16_t i=0; i<(SSD1306_LCDWIDTH*SSD1306_LCDHEIGHT/8); i++) {
-	for (uint16_t i=0; i<(SSD1306_LCDHEIGHT); i++) {
+	//for (uint16_t i=0; i<(SSD1306_LCDHEIGHT); i++) {
       // send a bunch of data in one xmission
 //      HWIRE.beginTransmission(_i2caddr);
-      HAL_I2C_Mem_Write(i2c_handler, _i2caddr << 1, 0x40, 1, &buffer[i*16], 16, 50);
+      //HAL_I2C_Mem_Write(i2c_handler, _i2caddr << 1, 0x40, 1, &buffer[i*16], 16, 50);
+      HAL_I2C_Mem_Write_DMA(i2c_handler, _i2caddr << 1, 0x40, 1, buffer, 16*SSD1306_LCDHEIGHT);
       //WIRE_WRITE(0x40);
 //      for (uint8_t x=0; x<16; x++) {
 //  WIRE_WRITE(buffer[i]);
@@ -425,7 +435,7 @@ void SSD1306::display(void) {
 //      }
 //      i--;
 //      HWIRE.endTransmission();
-    }
+    //}
 
 }
 

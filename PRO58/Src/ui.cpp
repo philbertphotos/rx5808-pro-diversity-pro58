@@ -10,7 +10,7 @@ namespace Ui {
 
     void setup(I2C_HandleTypeDef *i2c_handle) {
         display.begin(i2c_handle, OLED_RESET, SSD1306_SWITCHCAPVCC, 0x3C);
-//        display.begin(i2c_handle, OLED_RESET, SSD1306_SWITCHCAPVCC, 0x3D);
+        //display.begin(i2c_handle, OLED_RESET, SSD1306_SWITCHCAPVCC, 0x3D);
 
         display.setTextColor(WHITE);
         display.setTextSize(1);
