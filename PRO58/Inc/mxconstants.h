@@ -82,7 +82,12 @@
 #define LED_A_Pin GPIO_PIN_9
 #define LED_A_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
-
+#ifdef NUCLEO_TEST
+	#define LED_B_Pin GPIO_PIN_2 //
+	#define LED_B_GPIO_Port GPIOB // NUCLEO BOARDS HAS PA2 connected to USART of ST-LINK
+	#define RECEIVER_SW_Pin GPIO_PIN_1
+	#define RECEIVER_SW_GPIO_Port GPIOB //LSE
+#endif
 /* USER CODE END Private defines */
 
 /**

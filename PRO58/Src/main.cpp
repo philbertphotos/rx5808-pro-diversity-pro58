@@ -46,6 +46,7 @@
 #include "ui.h"
 
 #include "DWT_Delay.h"
+#include "i2c_reset.h"
 
 /* USER CODE END Includes */
 
@@ -125,6 +126,7 @@ int main(void)
   HAL_GPIO_WritePin(SPI_DATA_GPIO_Port,SPI_DATA_Pin,GPIO_PIN_RESET);
 
   HAL_Delay(1000); //Delay 500ms to allow RX5808 startup.
+  I2C_Reset(hi2c2, MX_I2C2_Init);
   EepromSettings.init(&hi2c2);
   EepromSettings.load();
   Receiver::setup(&hadc1);
@@ -132,6 +134,7 @@ int main(void)
 
   StateMachine::setup();
 
+  I2C_Reset(hi2c1, MX_I2C1_Init);
   Ui::setup(&hi2c1);
 
   Receiver::setActiveReceiver(Receiver::ReceiverId::A);

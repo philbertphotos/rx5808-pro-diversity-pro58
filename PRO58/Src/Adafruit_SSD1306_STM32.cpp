@@ -23,6 +23,9 @@ All text above, and the splash screen below must be included in any redistributi
 #include <Adafruit_GFX_AS.h>
 #include "SSD1306_STM32.h"
 
+#ifndef I2C_WAIT_READY
+#define I2C_WAIT_READY while(HAL_I2C_GetState(i2c_handler)!=HAL_I2C_STATE_READY){} //wait for I2C free.
+#endif
 
 #ifndef swap
 #define swap(a, b) { int16_t t = a; a = b; b = t; }
@@ -283,6 +286,8 @@ void SSD1306::invertDisplay(uint8_t i) {
 }
 
 void SSD1306::ssd1306_command(uint8_t c) {
+	I2C_WAIT_READY
+
     uint8_t control = 0x00;   // Co = 0, D/C = 0
 //    uint8_t data[2];
 //    data[0] = 0x00;
@@ -393,6 +398,7 @@ void SSD1306::dim(bool dim) {
 }
 
 void SSD1306::ssd1306_data(uint8_t c) {
+	I2C_WAIT_READY
      // I2C
     uint8_t control = 0x40;   // Co = 0, D/C = 1
 
@@ -405,6 +411,9 @@ void SSD1306::ssd1306_data(uint8_t c) {
 }
 
 void SSD1306::display(void) {
+
+
+
   ssd1306_command(SSD1306_COLUMNADDR);
   ssd1306_command(0);   // Column start address (0 = reset)
   ssd1306_command(SSD1306_LCDWIDTH-1); // Column end address (127 = reset)
@@ -421,13 +430,14 @@ void SSD1306::display(void) {
     ssd1306_command(1); // Page end address
   #endif
 
+    I2C_WAIT_READY
     // I2C
 //    for (uint16_t i=0; i<(SSD1306_LCDWIDTH*SSD1306_LCDHEIGHT/8); i++) {
 	//for (uint16_t i=0; i<(SSD1306_LCDHEIGHT); i++) {
       // send a bunch of data in one xmission
 //      HWIRE.beginTransmission(_i2caddr);
-      //HAL_I2C_Mem_Write(i2c_handler, _i2caddr << 1, 0x40, 1, &buffer[i*16], 16, 50);
-      HAL_I2C_Mem_Write_DMA(i2c_handler, _i2caddr << 1, 0x40, 1, buffer, 16*SSD1306_LCDHEIGHT);
+      HAL_I2C_Mem_Write(i2c_handler, _i2caddr << 1, 0x40, 1, buffer, 16*SSD1306_LCDHEIGHT, 20);
+      //HAL_I2C_Mem_Write_DMA(i2c_handler, _i2caddr << 1, 0x40, 1, buffer, 16*SSD1306_LCDHEIGHT);
       //WIRE_WRITE(0x40);
 //      for (uint8_t x=0; x<16; x++) {
 //  WIRE_WRITE(buffer[i]);

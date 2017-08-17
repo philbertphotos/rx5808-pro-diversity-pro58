@@ -111,7 +111,7 @@ Eeprom24C01_02::writeByte
     uint8_t    address,
     uint8_t    data
 ){
-	//HAL_I2C_Mem_Write(i2c_handler, m_deviceAddress<<1, address, 1, &data, 1, 100);
+	HAL_I2C_Mem_Write(i2c_handler, m_deviceAddress<<1, address, 1, &data, 1, 100);
 //    Wire2.beginTransmission(m_deviceAddress);
 //    Wire2.write(address);
 //    Wire2.write(data);
@@ -189,7 +189,7 @@ Eeprom24C01_02::readByte
     uint8_t address
 ){
 	uint8_t data = 0;
-	//HAL_I2C_Mem_Read(i2c_handler, m_deviceAddress << 1, address, 1, &data, 1, 100);
+	HAL_StatusTypeDef ret = HAL_I2C_Mem_Read(i2c_handler, m_deviceAddress << 1, address, 1, &data, 1, 100);
 
 //    Wire2.beginTransmission(m_deviceAddress);
 //    Wire2.write(address);
@@ -291,7 +291,7 @@ Eeprom24C01_02::writeBuffer
     uint8_t*   p_data
 ){
 
-	//HAL_I2C_Mem_Write(i2c_handler, m_deviceAddress << 1, address, 1, p_data, length, 100);
+	HAL_I2C_Mem_Write_DMA(i2c_handler, m_deviceAddress << 1, address, 1, p_data, length);
 
 //    Wire2.beginTransmission(m_deviceAddress);
 //    Wire2.write(address);
@@ -324,7 +324,7 @@ Eeprom24C01_02::readBuffer
     uint8_t    length,
     uint8_t*   p_data
 ){
-	//HAL_I2C_Mem_Write(i2c_handler, m_deviceAddress << 1, address, 1, p_data, length, 100);
+	HAL_I2C_Mem_Read(i2c_handler, m_deviceAddress << 1, address, 1, p_data, length, 100);
 
 //    Wire2.beginTransmission(m_deviceAddress);
 //    Wire2.write(address);
